@@ -1,0 +1,12 @@
+cd
+proceed="true"
+
+# Make sure script exists and is executable
+[ -x punishment.sh ] || proceed="false"
+
+# Don't do anything if there is no active unix-court case
+[ -f .bashrc_fate ] || proceed="false"
+. .bashrc_fate
+[ "${PUNISH}" = "true" -a -n "${PLAINTIFF}" ] || proceed="false"
+
+[ "${proceed}" = "true" ] && { exec ./punishment.sh || exit; }

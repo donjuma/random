@@ -1,55 +1,69 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# Make sure the environment variable PLAINTIFF is set. Otherwise, assume
+# someone pissed off Omar again.
+[ -n "${PLAINTIFF}" ] || export PLAINTIFF="Omar"
+all_caps_plaintiff=$(echo "${PLAINTIFF}" | tr '[:lower:]' '[:upper:]')
+if [ ${PLAINTIFF} = 'Bethany' ] ; then
+    pronoun='her'
+else
+    pronoun='his'
+fi
+all_caps_pronoun=$(echo "${pronoun}" | tr '[:lower:]' '[:upper:]')
 
 myname=$(whoami)
-correct1="I WILL NEVER USE OMARS MACHINE AGAIN"
-correct2="I WILL ALSO NEVER CHANGE HIS TTY AGAIN"
+correct1="I WILL NEVER USE ${all_caps_plaintiff}'S MACHINE AGAIN"
+correct2="I WILL ALSO NEVER CHANGE ${all_caps_pronoun} TTY AGAIN"
 
-whiptail --title "DO NOT USE OMAR'S MACHINE" --msgbox "This is why you dont use Omar's machine" 8 78
+whiptail --title "DO NOT USE ${all_caps_plaintiff}'S MACHINE" --msgbox "This is why you dont use ${PLAINTIFF}'s machine" 8 78
 
-whiptail --title "DO NOT USE OMAR'S MACHINE" --msgbox "Your name has been added to Omar's naughty list..." 8 78
+whiptail --title "DO NOT USE ${all_caps_plaintiff}'S MACHINE" --msgbox "Your name has been added to ${PLAINTIFF}'s naughty list..." 8 78
 
-if (whiptail --title "Will you seek forgiveness?" --yes-button " Yes, I'm sorry. " --no-button " I regret nothing. " --yesno "Do you wish to be removed from Omar's naughty list?" 8 78) then
-    whiptail --title "This is why you don't use Omar's machine" --msgbox "You must prove you really are sorry." 8 78
-    response1=$(whiptail --title "Test Question 1" --inputbox "Please enter the following EXACTLY as shown: \nI WILL NEVER USE OMARS MACHINE AGAIN" 8 78 3>&1 1>&2 2>&3)
+if (whiptail --title "Will you seek forgiveness?" --yes-button " Yes, I'm sorry. " --no-button " I regret nothing. " --yesno "Do you wish to be removed from ${PLAINTIFF}'s naughty list?" 8 78) then
+    whiptail --title "This is why you don't use ${PLAINTIFF}'s machine" --msgbox "You must prove you really are sorry." 8 78
+    #response1=$(whiptail --title "Test Question 1" --inputbox "Please enter the following EXACTLY as shown: \nI WILL NEVER USE OMARS MACHINE AGAIN" 8 78 3>&1 1>&2 2>&3)
+    response1=$(whiptail --title "Test Question 1" --inputbox "Please enter the following EXACTLY as shown: \n${correct1}" 8 78 3>&1 1>&2 2>&3)
 
     exitstatus=$?
     if [ $exitstatus = 0 ]; then
         if [ "$response1" != "$correct1" ]; then
             echo "FAIL"
-            whiptail --title "DO NOT USE OMAR'S MACHINE" --msgbox "FAIL: You are still naughty" 8 78
-            logout
+            whiptail --title "DO NOT USE ${all_caps_plaintiff}'S MACHINE" --msgbox "FAIL: You are still naughty" 8 78
+            exit 1
         else
             echo "PASS"
-            response2=$(whiptail --title "Test Question 2" --inputbox "Please enter the following EXACTLY as shown: \nI WILL ALSO NEVER CHANGE HIS TTY AGAIN" 8 78 3>&1 1>&2 2>&3)
+            response2=$(whiptail --title "Test Question 2" --inputbox "Please enter the following EXACTLY as shown: \n${correct2}" 8 78 3>&1 1>&2 2>&3)
             exitstatus2=$?
             if [ $exitstatus2 = 0 ]; then
                 if [ "$response2" != "$correct2" ]; then
                     echo "FAIL"
-                    whiptail --title "DO NOT USE OMAR'S MACHINE" --msgbox "FAIL: You are still naughty" 8 78
-                    logout
+                    whiptail --title "DO NOT USE ${all_caps_plaintiff}'S MACHINE" --msgbox "FAIL: You are still naughty" 8 78
+                    exit 1
                 else
                     echo "PASS"
-                    whiptail --title "DO NOT USE OMAR'S MACHINE" --msgbox "You have been forgiven. Please don't enter my naughty list again..." 8 78
-                    whiptail --title "DO NOT USE OMAR'S MACHINE" --msgbox "USER: ${myname} has been removed from GROUP: naughty" 8 78
+                    whiptail --title "DO NOT USE ${all_caps_plaintiff}'S MACHINE" --msgbox "You have been forgiven. Please don't enter my naughty list again..." 8 78
+                    whiptail --title "DO NOT USE ${all_caps_plaintiff}'S MACHINE" --msgbox "USER: ${myname} has been removed from GROUP: naughty" 8 78
 
-                    #Remove the last line from the user's BashRC
-                    sed -i '$d' ~/.bashrc
+                    ##Remove the last line from the user's BashRC
+                    #sed -i '$d' ~/.bashrc
+                    # Update unix-court case
+                    echo "export PUNISH=\"false\"" >> .bashrc_fate
                 fi
             else
                 echo "YOU HIT CANCEL"
-                whiptail --title "DO NOT USE OMAR'S MACHINE" --msgbox "FAIL: You are still naughty" 8 78
-                logout
+                whiptail --title "DO NOT USE ${all_caps_plaintiff}'S MACHINE" --msgbox "FAIL: You are still naughty" 8 78
+                exit 1
             fi
         fi
     else
         echo "You hit cancel"
-        whiptail --title "DO NOT USE OMAR'S MACHINE" --msgbox "FAIL: You are still naughty" 8 78
-        logout
+        whiptail --title "DO NOT USE ${all_caps_plaintiff}'S MACHINE" --msgbox "FAIL: You are still naughty" 8 78
+        exit 1
     fi
 else
     echo "Logging you off"
-    whiptail --title "DO NOT USE OMAR'S MACHINE" --msgbox "FAIL: You are still naughty" 8 78
-    logout
+    whiptail --title "DO NOT USE ${all_caps_plaintiff}'S MACHINE" --msgbox "FAIL: You are still naughty" 8 78
+    exit 1
 fi
 
 
